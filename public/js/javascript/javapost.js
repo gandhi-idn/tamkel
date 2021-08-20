@@ -3,40 +3,28 @@
             $('#submit').on('click', function() {
 
                 var url = $(this).data('url');
-                
+                var formData = new FormData( $("#form-karya")[0] );
     
                 $.ajax({
+
                     url: url,
                     type: "POST",
-                    data: {
-                        'nama_lengkap': $('[name="namaleng"]').val(),
-                        'jk': $('[name="jk"]:checked').val(),
-                        'tgl_lahir': $('[name="tgl"]').val(),
-                        'alamat': $('[name="alamat"]').val(),
-                        'umur': $('[name="umur"]').val(),
-                        'email': $('[name="email"]').val(),
-                        'nohp': $('[name="nohp"]').val(),
-                    },
-                    dataType: "JSON",
-    
-                    beforeSend: function() {
-                        $('#submit').removeClass("btn btn-primary").addClass("btn btn-secondary");
-                        $('#submit').text('wait...');
+                    data: formData,
+                    async : false,
+                    cache : false,
+                    contentType : false,
+                    processData : false,                   
                         
-                    },
-    
                     success: function(response) {                        
-                        if (response.status) {                            
-                            
-                            $('#Modalkaryawan').modal('hide');
-                        } 
-                        $('#form-karya')[0].reset();
-                        $('#submit').removeClass("btn btn-secondary").addClass("btn btn-primary");
-                        $('#submit').text('Simpan');
+                        if (response.status) {
+                              success();                      
+                        }                         
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
                         alert('Error tambah / update data');
+                        $('#form-karya')[0].reset();
+                        $('#submit').removeClass("btn btn-secondary").addClass("btn btn-primary");
                         $('#submit').text('Simpan'); //change button text                        
                     }
                 });
@@ -51,6 +39,17 @@
                 $('[name="umur"]').val(age);
             });
 
+            function refreshTable() {
+                table.ajax.reload(null, false); //reload datatable ajax 
+            }
+
+            function success() {
+                refreshTable();
+                $('#Modalkaryawan').modal('hide');
+                $('#form-karya')[0].reset();
+                $('#submit').removeClass("btn btn-secondary").addClass("btn btn-primary");
+                $('#submit').text('Simpan');    
+            }
             //umur otomatis untuk format tanggal chrome atau browser dengan bahasa indonesia
             // $('[name="tgl"]').change(function() {                
             //     var dob = $('[name="tgl"]').val();
